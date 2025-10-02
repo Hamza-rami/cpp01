@@ -1,5 +1,6 @@
 #include "Replace.hpp"
 
+
 int main(int ac, char* av[])
 {
     if (ac != 4)
@@ -7,16 +8,19 @@ int main(int ac, char* av[])
         std::cerr << "Usage: ./replace filename s1 s2\n";
         return 1;
     }
-
+    if (av[2][0] == '\0')
+        return 1;
     std::string content = readFile(av[1]);
     if (content.empty())
+    {
+        std::cerr << "Emty file\n";
         return 1;
+    }
 
     content = replace_str(content, av[2], av[3]);
 
     std::string outputName = std::string(av[1]) + ".replace";
     if (!writeFile(outputName.c_str(), content))
         return 1;
-
     return 0;
 }

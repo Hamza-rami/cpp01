@@ -1,16 +1,22 @@
 #include "Replace.hpp"
 
 
-std::string replace_str(std::string line, std::string s1, std::string s2)
+std::string replace_str(const std::string& line, const std::string s1, const std::string s2)
 {
+    std::string result;
     size_t pos = 0;
-    while ((pos = line.find(s1, pos)) != std::string::npos) 
+    size_t found;
+
+    while ((found = line.find(s1, pos)) != std::string::npos)
     {
-        line.replace(pos, s1.length(), s2);
-        pos += s2.length();
+        result += line.substr(pos, found - pos);
+        result += s2;
+        pos = found + s1.length();
     }
-    return line;
+    result += line.substr(pos);
+    return result;
 }
+
 
 std::string readFile(const char* filename)
 {
@@ -21,21 +27,11 @@ std::string readFile(const char* filename)
         std::cerr << "Error opening input file!\n";
         return "";
     }
-
+    
     std::string line;
-    std::string all_line;
-    bool firstLine = true;
-
-    while (std::getline(inputFile, line)) 
-    {
-        if (!firstLine)
-            all_line += "\n";
-        all_line += line;
-        firstLine = false;
-    }
-
+    std::getline(inputFile, line, '\0');
     inputFile.close();
-    return all_line;
+    return line;
 }
 
 bool writeFile(const char* filename, const std::string& content)
